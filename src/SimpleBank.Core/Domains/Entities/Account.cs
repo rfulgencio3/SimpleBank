@@ -13,6 +13,7 @@ public class Account : Base
     public Gender Gender { get; set; }
     public string Email { get; set; }
     public decimal Balance { get; set; }
+    public virtual ICollection<Card> Cards { get; set; }
 
     public Account FromCreateAccount(CreateAccount account)
     {

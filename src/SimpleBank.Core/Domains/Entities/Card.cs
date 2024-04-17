@@ -5,24 +5,26 @@ namespace SimpleBank.Core.Domains.Entities;
 
 public class Card : Base
 {
-    public Account Account { get; set; }
+    public int AccountId { get; set; }
     public string DisplayName { get; set; }
     public Status Status { get; set; }
     public CardType CardType { get; set; }
     public long CardNumber { get; set; }
     public string Expiration { get; set; }
     public string Last4 { get; set; }
-    public Card FromCreateCard(CreateCard card, int accountNumber, long cardNumber)
+    public virtual Account Account { get; set; }
+    public virtual ICollection<Transaction> Transactions { get; set; }
+    public Card FromCreateCard(CreateCard card, int accountId, long cardNumber)
     {
         return new Card
         {
+            AccountId = accountId,
             Status = Status.Active,
-            Account = new Account { AccountNumber = accountNumber },
             DisplayName = card.DisplayName,
             CardType = card.CardType,
             CardNumber = cardNumber,
             Expiration = GenerateExpiration(card.CardType),
-            Last4 = cardNumber.ToString().TakeLast(4).ToString(),
+            Last4 = string.Concat(cardNumber.ToString().TakeLast(4)),
             CreatedAt = DateTime.UtcNow
         };
     }

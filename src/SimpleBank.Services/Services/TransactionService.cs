@@ -29,9 +29,9 @@ public class TransactionService : ITransactionService
             var card = await _cardRepository.GetCardByNumberAsync(cardNumber);
 
             if (card == null || card.CardNumber == 0)
-                throw new Exception("CARD_NOT_FOUND");
+                return null;
 
-            var transaction = new Transaction().FromCreateTransaction(cardNumber, createTransaction);
+            var transaction = new Transaction().FromCreateTransaction(card.Id, createTransaction);
 
             return await _transactionRepository.CreateTransactionAsync(transaction);
         }

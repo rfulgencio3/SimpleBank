@@ -44,10 +44,16 @@ public class CardRepository : ICardRepository
         long startRange = 3521718200000000;
         long endRange = 3521718299999999;
 
-        var maxCardNumber = await _dbContext.Cards.MaxAsync(a => (long?)a.CardNumber);
-        long nextCardNumber = maxCardNumber.HasValue ? maxCardNumber.Value + 1 : startRange;
+        var maxCardNumber = await _dbContext.Cards
+            .OrderByDescending(c => c.CardNumber)
+            .Select(c => c.CardNumber)
+            .FirstOrDefaultAsync();
 
-        return maxCardNumber <= endRange ? maxCardNumber.Value : startRange;
+        long nextCardNumber = maxCardNumber != 0 ? maxCardNumber + 1 : startRange;
+
+        return nextCardNumber <= endRange ? nextCardNumber : startRange;
     }
+
+
 
 }

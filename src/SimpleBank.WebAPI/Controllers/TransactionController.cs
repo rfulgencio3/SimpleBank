@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SimpleBank.Core.Domains.Entities;
 using SimpleBank.Core.Domains.ValueObjects;
 using SimpleBank.Core.Services;
 
@@ -20,7 +21,7 @@ public class TransactionController : Controller
     public async Task<IActionResult> GetTransactionsByCardNumber(long cardNumber)
     {
         var result = await _transactionService.GetTransactionsByCardNumberAsync(cardNumber);
-        return result is not null ? Ok(result) : NotFound();
+        return result.Count() > 0 ? Ok(result) : NotFound(Enumerable.Empty<Transaction>());
     }
 
     [HttpPost("{cardNumber}")]

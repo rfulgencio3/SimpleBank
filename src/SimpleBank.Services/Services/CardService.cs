@@ -40,7 +40,7 @@ public class CardService : ICardService
 
             if (cardNumber > 0)
             {
-                var card = new Card().FromCreateCard(createCard, accountNumber, cardNumber);
+                var card = new Card().FromCreateCard(createCard, account.Id, cardNumber);
                 return await _cardRepository.CreateCardAsync(card);
             }
             return null;
