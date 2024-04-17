@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SimpleBank.Core.Domains.DTOs;
 using SimpleBank.Core.Domains.Entities;
+using SimpleBank.Core.Domains.ValueObjects;
 using SimpleBank.Core.Services;
 using System.ComponentModel.DataAnnotations;
 
@@ -40,16 +40,16 @@ public class AccountController : Controller
     }
 
     [HttpPost("create")]
-    public async Task<IActionResult> Post(CreateAccountDTO accountDTO)
+    public async Task<IActionResult> Post(CreateAccount createAccount)
     {
-        var result = await _accountService.CreateAccountAsync(accountDTO);
+        var result = await _accountService.CreateAccountAsync(createAccount);
         return result is not null ? Accepted("ACCOUNT_CREATED_WITH_SUCCESS", $"ACCOUNT_NUMBER: {result.AccountNumber}") : BadRequest();
     }
 
     [HttpPut("update")]
     public async Task<IActionResult> Put(
         [Required][FromHeader] int accountNumber,
-        UpdateAccountDTO accountDTO)
+        UpdateAccount accountDTO)
     {
         var result = await _accountService.UpdateAccountAsync(accountNumber, accountDTO);
         return result is not null ? Accepted("ACCOUNT_UPDATED_WITH_SUCCESS", $"ACCOUNT_NUMBER: {result.AccountNumber}") : NotFound();

@@ -1,9 +1,9 @@
 ﻿using SimpleBank.Core.Domains.Enums;
 using System.ComponentModel.DataAnnotations;
 
-namespace SimpleBank.Core.Domains.DTOs;
+namespace SimpleBank.Core.Domains.ValueObjects;
 
-public record CreateAccountDTO
+public class CreateAccount
 {
     public string IdentificationNumber { get; init; }
     [Required(ErrorMessage = "Field 'HolderName' is required.")]
@@ -13,4 +13,12 @@ public record CreateAccountDTO
     public Gender Gender { get; init; }
     [Required(ErrorMessage = "Field 'Email' is required.")]
     public string Email { get; init; }
+    public CreateAccount(string identificationNumber, string holderName, DateTime birthDate, Gender gender, string email)
+    {
+        IdentificationNumber = identificationNumber;
+        HolderName = holderName;
+        BirthDate = birthDate;
+        Gender = gender;
+        Email = email;
+    }
 }

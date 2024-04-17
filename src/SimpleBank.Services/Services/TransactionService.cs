@@ -1,5 +1,5 @@
-﻿using SimpleBank.Core.Domains.DTOs;
-using SimpleBank.Core.Domains.Entities;
+﻿using SimpleBank.Core.Domains.Entities;
+using SimpleBank.Core.Domains.ValueObjects;
 using SimpleBank.Core.Services;
 using SimpleBank.Infra.Repositories.Interfaces;
 
@@ -22,7 +22,7 @@ public class TransactionService : ITransactionService
         return await _transactionRepository.GetTransactionsByCardNumberAsync(cardNumber);
     }
 
-    public async Task<Transaction> CreateTransactionAsync(long cardNumber, CreateTransactionDTO transactionDTO)
+    public async Task<Transaction> CreateTransactionAsync(long cardNumber, CreateTransaction createTransaction)
     {
         try
         {
@@ -31,7 +31,7 @@ public class TransactionService : ITransactionService
             if (card == null || card.CardNumber == 0)
                 throw new Exception("CARD_NOT_FOUND");
 
-            var transaction = new Transaction().FromCreateTransaction(cardNumber, transactionDTO);
+            var transaction = new Transaction().FromCreateTransaction(cardNumber, createTransaction);
 
             return await _transactionRepository.CreateTransactionAsync(transaction);
         }

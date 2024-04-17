@@ -1,5 +1,5 @@
-﻿using SimpleBank.Core.Domains.DTOs;
-using SimpleBank.Core.Domains.Enums;
+﻿using SimpleBank.Core.Domains.Enums;
+using SimpleBank.Core.Domains.ValueObjects;
 
 namespace SimpleBank.Core.Domains.Entities;
 
@@ -10,7 +10,7 @@ public class Transaction : Base
     public decimal Amount { get; set; }
     public Card Card { get; set; }
 
-    public Transaction FromCreateTransaction(long cardNumber, CreateTransactionDTO transaction)
+    public Transaction FromCreateTransaction(long cardNumber, CreateTransaction transaction)
     {
         return new Transaction
         {

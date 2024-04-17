@@ -1,5 +1,5 @@
-﻿using SimpleBank.Core.Domains.DTOs;
-using SimpleBank.Core.Domains.Entities;
+﻿using SimpleBank.Core.Domains.Entities;
+using SimpleBank.Core.Domains.ValueObjects;
 using SimpleBank.Core.Services;
 using SimpleBank.Infra.Repositories.Interfaces;
 
@@ -27,7 +27,7 @@ public class CardService : ICardService
         return await _cardRepository.GetCardsByAccountNumberAsync(accountNumber);
     }
 
-    public async Task<Card> CreateCardAsync(int accountNumber, CreateCardDTO cardDTO)
+    public async Task<Card> CreateCardAsync(int accountNumber, CreateCard createCard)
     {
         try
         {
@@ -40,7 +40,7 @@ public class CardService : ICardService
 
             if (cardNumber > 0)
             {
-                var card = new Card().FromCreateCard(cardDTO, accountNumber, cardNumber);
+                var card = new Card().FromCreateCard(createCard, accountNumber, cardNumber);
                 return await _cardRepository.CreateCardAsync(card);
             }
             return null;
@@ -51,7 +51,7 @@ public class CardService : ICardService
         }
     }
 
-    public async Task<Card?> UpdateCardAsync(int accountNumber, long cardNumber, UpdateCardDTO cardDTO)
+    public async Task<Card?> UpdateCardAsync(int accountNumber, long cardNumber, UpdateCard updateCard)
     {
         try
         {
@@ -60,14 +60,14 @@ public class CardService : ICardService
             if (account == null || account.AccountNumber == 0)
                 return null;
 
-            var card = new Card().FromUpdateCard(cardDTO);
+            var card = new Card().FromUpdateCard(updateCard);
 
             var findCard = await _cardRepository.GetCardByNumberAsync(cardNumber);
 
             if (findCard is null)
                 return findCard;
 
-            findCard.Status = cardDTO.Status;
+            findCard.Status = updateCard.Status;
 
             return await _cardRepository.UpdateCardAsync(findCard);
         }

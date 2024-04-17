@@ -1,6 +1,5 @@
-﻿using Microsoft.VisualBasic;
-using SimpleBank.Core.Domains.DTOs;
-using SimpleBank.Core.Domains.Enums;
+﻿using SimpleBank.Core.Domains.Enums;
+using SimpleBank.Core.Domains.ValueObjects;
 
 namespace SimpleBank.Core.Domains.Entities;
 
@@ -13,7 +12,7 @@ public class Card : Base
     public long CardNumber { get; set; }
     public string Expiration { get; set; }
     public string Last4 { get; set; }
-    public Card FromCreateCard(CreateCardDTO card, int accountNumber, long cardNumber)
+    public Card FromCreateCard(CreateCard card, int accountNumber, long cardNumber)
     {
         return new Card
         {
@@ -28,7 +27,7 @@ public class Card : Base
         };
     }
 
-    public Card FromUpdateCard(UpdateCardDTO card)
+    public Card FromUpdateCard(UpdateCard card)
     {
         return new()
         {

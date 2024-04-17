@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SimpleBank.Core.Domains.DTOs;
 using SimpleBank.Core.Domains.Entities;
+using SimpleBank.Core.Domains.ValueObjects;
 using SimpleBank.Core.Services;
 using System.ComponentModel.DataAnnotations;
 
@@ -35,9 +35,9 @@ public class CardController : Controller
     [HttpPost("create")]
     public async Task<IActionResult> Post(
         [Required][FromHeader] int accountNumber,
-        CreateCardDTO cardDTO)
+        CreateCard createCard)
     {
-        var result = await _cardService.CreateCardAsync(accountNumber, cardDTO);
+        var result = await _cardService.CreateCardAsync(accountNumber, createCard);
         return result is not null ? Accepted("CARD_CREATED_WITH_SUCCESS", $"CARD_LAST4_NUMBER: {result.Last4}") : BadRequest();
     }
 
@@ -45,9 +45,9 @@ public class CardController : Controller
     public async Task<IActionResult> Put(
         [Required][FromHeader] int accountNumber,
         [Required][FromHeader] long cardNumber,
-        UpdateCardDTO cardDTO)
+        UpdateCard updateCard)
     {
-        var result = await _cardService.UpdateCardAsync(accountNumber, cardNumber, cardDTO);
+        var result = await _cardService.UpdateCardAsync(accountNumber, cardNumber, updateCard);
         return result is not null ? Accepted("CARD_UPDATED_WITH_SUCCESS", $"CARD_LAST4_NUMBER: {result.Last4}") : NotFound();
     }
 }

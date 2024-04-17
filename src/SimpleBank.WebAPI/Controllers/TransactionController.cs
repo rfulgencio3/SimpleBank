@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SimpleBank.Core.Domains.DTOs;
+using SimpleBank.Core.Domains.ValueObjects;
 using SimpleBank.Core.Services;
 
 namespace SimpleBank.WebAPI.Controllers;
@@ -24,9 +24,9 @@ public class TransactionController : Controller
     }
 
     [HttpPost("{cardNumber}")]
-    public async Task<IActionResult> Post(long cardNumber, CreateTransactionDTO transactionDTO)
+    public async Task<IActionResult> Post(long cardNumber, CreateTransaction createTransaction)
     {
-        var result = await _transactionService.CreateTransactionAsync(cardNumber, transactionDTO);
+        var result = await _transactionService.CreateTransactionAsync(cardNumber, createTransaction);
         return result is not null ? Accepted("TRANSACTION_CREATED_WITH_SUCCESS", $"TRANSACTION_ID: {result.Id}") : BadRequest();
     }
 }

@@ -1,5 +1,5 @@
-﻿using SimpleBank.Core.Domains.DTOs;
-using SimpleBank.Core.Domains.Entities;
+﻿using SimpleBank.Core.Domains.Entities;
+using SimpleBank.Core.Domains.ValueObjects;
 using SimpleBank.Core.Services;
 using SimpleBank.Infra.Repositories.Interfaces;
 
@@ -27,11 +27,11 @@ public class AccountService : IAccountService
         return await _repository.GetAllAccountsAsync();
     }
 
-    public Task<Account> CreateAccountAsync(CreateAccountDTO accountDTO)
+    public Task<Account> CreateAccountAsync(CreateAccount createAccount)
     {
         try
         {
-            var account = new Account().FromCreateAccount(accountDTO);
+            var account = new Account().FromCreateAccount(createAccount);
             account.AccountNumber = _repository.GetNextAccountNumberAsync().Result;
 
             return _repository.CreateAccountAsync(account);
@@ -43,7 +43,7 @@ public class AccountService : IAccountService
         
     }
 
-    public async Task<Account?> UpdateAccountAsync(int accountNumber, UpdateAccountDTO accountDTO)
+    public async Task<Account?> UpdateAccountAsync(int accountNumber, UpdateAccount accountDTO)
     {
         try
         {

@@ -1,6 +1,5 @@
-﻿using SimpleBank.Core.Domains.DTOs;
-using SimpleBank.Core.Domains.Enums;
-using System.Reflection.PortableExecutable;
+﻿using SimpleBank.Core.Domains.Enums;
+using SimpleBank.Core.Domains.ValueObjects;
 
 namespace SimpleBank.Core.Domains.Entities;
 
@@ -15,8 +14,7 @@ public class Account : Base
     public string Email { get; set; }
     public decimal Balance { get; set; }
 
-    public Account() { }
-    public Account FromCreateAccount(CreateAccountDTO account)
+    public Account FromCreateAccount(CreateAccount account)
     {
         return new()
         {
@@ -31,7 +29,7 @@ public class Account : Base
         };
     }
 
-    public Account FromUpdateAccount(UpdateAccountDTO account)
+    public Account FromUpdateAccount(UpdateAccount account)
     {
         return new()
         {

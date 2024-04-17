@@ -1,5 +1,5 @@
-﻿using SimpleBank.Core.Domains.DTOs;
-using SimpleBank.Core.Domains.Entities;
+﻿using SimpleBank.Core.Domains.Entities;
+using SimpleBank.Core.Domains.ValueObjects;
 
 namespace SimpleBank.Core.Services;
 
@@ -7,6 +7,6 @@ public interface ICardService
 {
     Task<Card> GetCardByNumberAsync(long cardNumber);
     Task<IEnumerable<Card?>> GetCardsByAccountAsync(int accountNumber);
-    Task<Card> CreateCardAsync(int accountNumber, CreateCardDTO createCardDTO);
-    Task<Card> UpdateCardAsync(int accountNumber, long cardNumber, UpdateCardDTO UpdateAccountDTO);
+    Task<Card> CreateCardAsync(int accountNumber, CreateCard createCard);
+    Task<Card> UpdateCardAsync(int accountNumber, long cardNumber, UpdateCard UpdateAccount);
 }
