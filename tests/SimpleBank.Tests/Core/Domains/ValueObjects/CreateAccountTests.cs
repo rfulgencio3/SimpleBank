@@ -1,12 +1,12 @@
 ﻿using SimpleBank.Core.Domains.Enums;
 using SimpleBank.Core.Domains.ValueObjects;
 
-namespace SimpleBank.Tests.Core.Domains.DTOs;
+namespace SimpleBank.Tests.Core.Domains.ValueObjects;
 
-public class CreateAccountTets 
+public class CreateAccountTests 
 {
     [Fact]
-    public void GivenRecord_Shoud_SetProperties()
+    public void GivenCreateAccount_Shoud_SetProperties()
     {
         //Arrange
         var identificationNumber = Guid.NewGuid().ToString();
@@ -25,6 +25,5 @@ public class CreateAccountTets
         Assert.Equal(birthDate, createAccount.BirthDate);
         Assert.Equal(gender, createAccount.Gender);
         Assert.Equal(email, createAccount.Email);
-
     }
 }
