@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SimpleBank.Application.Services.Interfaces;
 using SimpleBank.Core.Domains.Entities;
 using SimpleBank.Core.Domains.ValueObjects;
-using SimpleBank.Core.Services;
 using System.ComponentModel.DataAnnotations;
 
 namespace SimpleBank.WebAPI.Controllers;

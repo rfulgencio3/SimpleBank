@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SimpleBank.Core.Domains.Entities;
+using SimpleBank.Core.Repositories;
 using SimpleBank.Infra.Models;
-using SimpleBank.Infra.Repositories.Interfaces;
 
 namespace SimpleBank.Infra.Repositories;
 

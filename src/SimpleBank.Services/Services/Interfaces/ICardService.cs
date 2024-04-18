@@ -1,7 +1,7 @@
 ﻿using SimpleBank.Core.Domains.Entities;
 using SimpleBank.Core.Domains.ValueObjects;
 
-namespace SimpleBank.Core.Services;
+namespace SimpleBank.Application.Services.Interfaces;
 
 public interface ICardService
 {

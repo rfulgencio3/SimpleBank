@@ -1,6 +1,6 @@
 ﻿using SimpleBank.Core.Domains.Entities;
 
-namespace SimpleBank.Infra.Repositories.Interfaces;
+namespace SimpleBank.Core.Repositories;
 
 public interface ITransactionRepository 
 {

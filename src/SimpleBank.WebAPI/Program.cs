@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using SimpleBank.Application.Services;
-using SimpleBank.Core.Services;
+using SimpleBank.Application.Services.Interfaces;
+using SimpleBank.Core.Repositories;
 using SimpleBank.Infra.Models;
 using SimpleBank.Infra.Repositories;
-using SimpleBank.Infra.Repositories.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 

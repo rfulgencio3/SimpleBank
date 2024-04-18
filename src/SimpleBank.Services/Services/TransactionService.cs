@@ -1,7 +1,7 @@
-﻿using SimpleBank.Core.Domains.Entities;
+﻿using SimpleBank.Application.Services.Interfaces;
+using SimpleBank.Core.Domains.Entities;
 using SimpleBank.Core.Domains.ValueObjects;
-using SimpleBank.Core.Services;
-using SimpleBank.Infra.Repositories.Interfaces;
+using SimpleBank.Core.Repositories;
 
 namespace SimpleBank.Application.Services;
 
