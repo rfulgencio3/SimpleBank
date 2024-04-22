@@ -15,6 +15,7 @@ public class Account : Base
     public decimal Balance { get; set; }
     public virtual ICollection<Card> Cards { get; set; }
 
+    public Account() { }
     public Account FromCreateAccount(CreateAccount account)
     {
         return new()
