@@ -1,9 +1,9 @@
 ﻿using SimpleBank.Core.Domains.Enums;
 using SimpleBank.Core.Domains.ValueObjects;
 
-namespace SimpleBank.Tests.Core.Domains.ValueObjects;
+namespace SimpleBank.Tests.Core.Domains.Entities.ValueObjects;
 
-public class UpdateAccountTests 
+public class UpdateAccountTests
 {
     [Fact]
     public void GivenUpdateAccountWithActiveStatus_Shoud_SetProperties()

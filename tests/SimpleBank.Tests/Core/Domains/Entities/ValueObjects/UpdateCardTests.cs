@@ -1,9 +1,9 @@
 ﻿using SimpleBank.Core.Domains.Enums;
 using SimpleBank.Core.Domains.ValueObjects;
 
-namespace SimpleBank.Tests.Core.Domains.ValueObjects;
+namespace SimpleBank.Tests.Core.Domains.Entities.ValueObjects;
 
-public class UpdateCardTests 
+public class UpdateCardTests
 {
     [Fact]
     public void GivenUpdateCardWithActiveStatus_Shoud_SetProperties()
