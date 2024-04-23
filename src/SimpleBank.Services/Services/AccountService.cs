@@ -27,7 +27,7 @@ public class AccountService : IAccountService
         return await _repository.GetAllAccountsAsync();
     }
 
-    public Task<Account> CreateAccountAsync(CreateAccount createAccount)
+    public async Task<Account> CreateAccountAsync(CreateAccount createAccount)
     {
         try
         {
