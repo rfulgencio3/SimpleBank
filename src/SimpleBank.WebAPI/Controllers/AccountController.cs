@@ -49,9 +49,9 @@ public class AccountController : Controller
     [HttpPut("update")]
     public async Task<IActionResult> Put(
         [Required][FromHeader] int accountNumber,
-        UpdateAccount accountDTO)
+        UpdateAccount account)
     {
-        var result = await _accountService.UpdateAccountAsync(accountNumber, accountDTO);
+        var result = await _accountService.UpdateAccountAsync(accountNumber, account);
         return result is not null ? Accepted("ACCOUNT_UPDATED_WITH_SUCCESS", $"ACCOUNT_NUMBER: {result.AccountNumber}") : NotFound();
     }
 

@@ -2,9 +2,7 @@
 using SimpleBank.Application.Services;
 using SimpleBank.Core.Domains.Entities;
 using SimpleBank.Core.Domains.Enums;
-using SimpleBank.Core.Domains.ValueObjects;
 using SimpleBank.Core.Repositories;
-using System.Runtime.InteropServices;
 
 namespace SimpleBank.Tests.Application.Services;
 

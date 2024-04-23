@@ -27,14 +27,14 @@ public class AccountService : IAccountService
         return await _repository.GetAllAccountsAsync();
     }
 
-    public Task<Account> CreateAccountAsync(CreateAccount createAccount)
+    public async Task<Account> CreateAccountAsync(CreateAccount createAccount)
     {
         try
         {
             var account = new Account().FromCreateAccount(createAccount);
             account.AccountNumber = _repository.GetNextAccountNumberAsync().Result;
 
-            return _repository.CreateAccountAsync(account);
+            return await _repository.CreateAccountAsync(account);
         }
         catch (Exception ex)
         {
