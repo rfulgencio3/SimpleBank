@@ -40,7 +40,6 @@ public class AccountService : IAccountService
         {
             throw new Exception($"ERROR_TO_CREATE_ACCOUNT: {ex.Message.ToString()}");
         }
-        
     }
 
     public async Task<Account?> UpdateAccountAsync(int accountNumber, UpdateAccount accountDTO)
