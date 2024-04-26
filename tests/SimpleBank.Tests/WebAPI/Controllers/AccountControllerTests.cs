@@ -11,25 +11,27 @@ namespace SimpleBank.Tests.Controllers;
 public class AccountControllerTests
 {
     private readonly AccountController _controller;
-    private readonly Mock<IAccountService> _service = new();
+    private readonly Mock<IAccountService> _serviceMock = new();
 
     public AccountControllerTests()
     {
-        _controller = new AccountController(_service.Object);
+        _controller = new AccountController(_serviceMock.Object);
     }
 
     [Fact]
     public async Task GetAccountById_Should_ReturnsOkResult()
     {
         // Arrange
-        long id = 1;
+        var id = 1;
+
+        _serviceMock.Setup(x => x.GetAccountByIdAsync(It.IsAny<long>())).ReturnsAsync(It.IsAny<Account>());
 
         // Act
-        var result = await _controller.GetAccountById(id) as OkObjectResult;
+        var result = await _controller.GetAccountById(id);
 
         // Assert
         Assert.NotNull(result);
-        Assert.IsType<Account>(result.Value);
+        Assert.IsType<Account>(result);
     }
 
     [Fact]
@@ -70,8 +72,8 @@ public class AccountControllerTests
 
         var createAccount = new CreateAccount(identificationNumber, holderName, birthDate, gender, email);
 
-        _service.Setup(s => s.CreateAccountAsync(createAccount))
-            .ReturnsAsync(It.IsAny<Account>());
+        _serviceMock.Setup(s => s.CreateAccountAsync(createAccount))
+            .ReturnsAsync(new Account().FromCreateAccount(createAccount));
 
         // Act
         var result = await _controller.Post(createAccount) as ObjectResult;
@@ -81,7 +83,7 @@ public class AccountControllerTests
         Assert.Equal(202, result.StatusCode);
     }
 
-    [Fact(Skip="Adjust")]
+    [Fact(Skip = "Not ready yet!")]
     public async Task PutAccount_Should_ReturnsAcceptedResult()
     {
         // Arrange
