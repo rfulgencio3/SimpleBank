@@ -8,15 +8,15 @@ namespace SimpleBank.Tests.Application.Services;
 
 public class CardServiceTests
 {
-    private readonly CardService _service; //Instância do objeto AccountService para realizar as operações
-    private readonly Mock<ICardRepository> _cardRepositoryMock = new(); //Mock das dependencias do objeto AccountService
-    private readonly Mock<IAccountRepository> _accountRepositoryMock = new(); //Mock das dependencias do objeto AccountService
+    private readonly CardService _service; 
+    private readonly Mock<ICardRepository> _cardRepositoryMock = new(); 
+    private readonly Mock<IAccountRepository> _accountRepositoryMock = new(); 
 
     public CardServiceTests()
     {
         _service = new CardService(
             _cardRepositoryMock.Object,
-            _accountRepositoryMock.Object); //Injeção de dependência na instância de AccountService para utilização dos métodos
+            _accountRepositoryMock.Object);
     }
 
     [Fact]

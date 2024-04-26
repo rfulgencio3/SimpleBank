@@ -42,11 +42,11 @@ public class AccountService : IAccountService
         }
     }
 
-    public async Task<Account?> UpdateAccountAsync(int accountNumber, UpdateAccount accountDTO)
+    public async Task<Account?> UpdateAccountAsync(int accountNumber, UpdateAccount updateAccount)
     {
         try
         {
-            var account = new Account().FromUpdateAccount(accountDTO);
+            var account = new Account().FromUpdateAccount(updateAccount);
             var findAccount = await _repository.GetAccountByNumberAsync(accountNumber);
             if (findAccount is null)
                 return findAccount;
@@ -60,7 +60,6 @@ public class AccountService : IAccountService
         {
             throw new Exception($"ERROR_TO_UPDATE_ACCOUNT: {ex.Message.ToString()}");
         }
-        
     }
 
     public async Task<bool> DeleteAccountAsync(int accountNumber)

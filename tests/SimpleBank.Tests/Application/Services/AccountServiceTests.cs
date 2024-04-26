@@ -1,85 +1,83 @@
-﻿using Moq;
+﻿using AutoBogus;
+using FluentAssertions;
+using Moq;
 using SimpleBank.Application.Services;
 using SimpleBank.Core.Domains.Entities;
-using SimpleBank.Core.Domains.Enums;
+using SimpleBank.Core.Domains.ValueObjects;
 using SimpleBank.Core.Repositories;
+using Gender = SimpleBank.Core.Domains.Enums.Gender;
 
 namespace SimpleBank.Tests.Application.Services;
 
 public class AccountServiceTests
 {
-    private readonly AccountService _service; //Instância do objeto AccountService para realizar as operações
-    private readonly Mock<IAccountRepository> _accountRepositoryMock = new(); //Mock das dependencias do objeto AccountService
+    private readonly AccountService _service;
+    private readonly Mock<IAccountRepository> _accountRepositoryMock = new(); 
 
     public AccountServiceTests()
     {
-        _service = new AccountService(_accountRepositoryMock.Object); //Injeção de dependência na instância de AccountService para utilização dos métodos
+        _service = new AccountService(_accountRepositoryMock.Object);
     }
 
     [Fact]
     public void GetAccountByIdAsync_Should_ReturnAccountWithSuccess()
     {
         // Arrange
-        var id = 1234567890;
-        var account = new Account
-        {
-            Id = id,
-            AccountNumber = 1,
-            Balance = 0,
-            BirthDate = new DateTime(2000, 05, 01),
-            Gender = Gender.Female,
-        };
+        var account = AutoFaker.Generate<Account>();
 
         _accountRepositoryMock.Setup(x => x.GetAccountByIdAsync(It.IsAny<long>())).ReturnsAsync(account);
 
         // Act
-        var result = _service.GetAccountByIdAsync(id).Result;
+        var result = _service.GetAccountByIdAsync(account.Id).Result;
 
         // Assert
-        Assert.NotNull(result);
-        Assert.Equal(id, result.Id);
-        Assert.Equal(1, result.AccountNumber);
-        Assert.Equal(0, result.Balance);
-        Assert.Equal(new DateTime(2000, 05, 01), result.BirthDate);
-        Assert.Equal(Gender.Female, result.Gender); 
+        result.Id.Should().Be(account.Id); //FluentAssertions
+        result.Should().NotBeNull();
+        _accountRepositoryMock.Verify(x => x.GetAccountByIdAsync(It.IsAny<long>()), Times.Once);
     }
 
-    public void GetAccountByNumberAsync_Should_ReturnAccountWithSuccess()
+    [Theory]
+    [InlineData(Gender.Male)]
+    [InlineData(Gender.Female)]
+    [InlineData(Gender.Other)]
+    [InlineData(Gender.PreferNotToSay)]
+    [Trait("GetAccountByNumberAsync", "Gender")]
+    public void GetAccountByNumberAsync_Should_ReturnAccountWithSuccess(Gender gender)
     {
         // Arrange
-        var number = 1234567890;
-        var account = new Account
-        {
-            Id = 1,
-            AccountNumber = number,
-            Balance = 0,
-            BirthDate = new DateTime(2000, 05, 01),
-            Gender = Gender.Female,
-        };
+        var account = new AutoFaker<Account>()
+            .RuleFor(x => x.Gender, gender)
+            .RuleFor(x => x.HolderName, f => f.Name.FullName())
+            .RuleFor(x => x.Email, f => f.Internet.Email())
+            .RuleFor(x => x.BirthDate, f => f.Date.Between(DateTime.Today.AddYears(-70), DateTime.Today.AddYears(-18)))
+            .Generate();
 
         _accountRepositoryMock.Setup(x => x.GetAccountByNumberAsync(It.IsAny<int>())).ReturnsAsync(account);
 
         // Act
-        var result = _service.GetAccountByNumberAsync(number).Result;
+        var result = _service.GetAccountByNumberAsync(account.AccountNumber).Result;
 
         // Assert
-        Assert.NotNull(result);
-        Assert.Equal(1, result.Id);
-        Assert.Equal(number, result.AccountNumber);
-        Assert.Equal(0, result.Balance);
-        Assert.Equal(new DateTime(2000, 05, 01), result.BirthDate);
-        Assert.Equal(Gender.Female, result.Gender);
+        result.Should().NotBeNull();
+        result.Id.Should().Be(account.Id);
+        result.Gender.Should().Be(gender);
+        result.BirthDate.Should().NotHaveYear(DateTime.Today.AddYears(-71).Year);
+        result.BirthDate.Should().NotHaveYear(DateTime.Today.AddYears(-17).Year);
+        _accountRepositoryMock.Verify(x => x.GetAccountByIdAsync(It.IsAny<long>()), Times.Never);
+        _accountRepositoryMock.Verify(x => x.GetAllAccountsAsync(), Times.Never);
+        _accountRepositoryMock.Verify(x => x.GetAccountByNumberAsync(It.IsAny<int>()), Times.Once);
     }
 
+    [Fact]
     public void GetAllAccounts_Should_ReturnAccountWithSuccess()
     {
         // Arrange
-        var account1 = new Account();
-        var account2 = new Account();
-
-        var accounts = new List<Account>();
-        accounts.Add(account1);
-        accounts.Add(account2);
+        var accounts = new AutoFaker<Account>()
+            .RuleFor(x => x.Gender, f => f.PickRandom<Gender>())
+            .RuleFor(x => x.HolderName, f => f.Name.FullName())
+            .RuleFor(x => x.Email, f => f.Internet.Email())
+            .RuleFor(x => x.BirthDate, f => f.Date.Between(DateTime.Today.AddYears(-70), DateTime.Today.AddYears(-18)))
+            .Generate(10);
 
         _accountRepositoryMock.Setup(x => x.GetAllAccountsAsync()).ReturnsAsync(accounts);
 
@@ -87,12 +85,88 @@ public class AccountServiceTests
         var result = _service.GetAllAsync().Result;
 
         // Assert
-        Assert.NotNull(result);
-        Assert.Equal(result.Count(), 2);
+        result.Should().NotBeNull();
+        result.Count().Should().Be(10);
+        _accountRepositoryMock.Verify(x => x.GetAccountByIdAsync(It.IsAny<long>()), Times.Never);
+        _accountRepositoryMock.Verify(x => x.GetAccountByNumberAsync(It.IsAny<int>()), Times.Never);
+        _accountRepositoryMock.Verify(x => x.GetAllAccountsAsync(), Times.Once);
     }
 
-    //Task<IEnumerable<Account?>> GetAllAsync();
-    //Task<Account> CreateAccountAsync(CreateAccount createAccount);
-    //Task<Account> UpdateAccountAsync(int accountNumber, UpdateAccount updateAccount);
-    //Task<bool> DeleteAccountAsync(int accountNumber);
+    [Fact]
+    public void CreateAccount_Should_ReturnAccountWithSuccess()
+    {
+        // Arrange
+        var createAccount = AutoFaker.Generate<CreateAccount>();
+        
+        _accountRepositoryMock.Setup(x => x.CreateAccountAsync(It.IsAny<Account>())).ReturnsAsync(It.IsAny<Account>());
+
+        // Act
+        var result = _service.CreateAccountAsync(createAccount);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.IsCompletedSuccessfully.Should().BeTrue();
+        _accountRepositoryMock.Verify(x => x.CreateAccountAsync(It.IsAny<Account>()), Times.Once);
+        _accountRepositoryMock.Verify(x => x.GetNextAccountNumberAsync(), Times.Once);
+    }
+
+    [Fact]
+    public void CreateAccount_Should_ReturnFail()
+    {
+        // Arrange
+        var createAccount = AutoFaker.Generate<CreateAccount>();
+
+        _accountRepositoryMock.Setup(x => x.CreateAccountAsync(It.IsAny<Account>())).Returns(Task.FromResult<Account>(null));
+
+        // Act
+        var result = _service.CreateAccountAsync(createAccount);
+
+        // Assert
+        result.IsCompletedSuccessfully.Should().BeTrue();
+        result.As<Account>().Should().BeNull();
+        _accountRepositoryMock.Verify(x => x.CreateAccountAsync(It.IsAny<Account>()), Times.Once);
+    }
+
+    [Fact]
+    public void UpdateAccount_Should_ReturnAccountWithSuccess()
+    {
+        // Arrange
+        var accountNumber = AutoFaker.Generate<int>();
+        var updateAccount = AutoFaker.Generate<UpdateAccount>();
+        var account = AutoFaker.Generate<Account>();
+
+        _accountRepositoryMock.Setup(x => x.UpdateAccountAsync(It.IsAny<Account>())).ReturnsAsync(It.IsAny<Account>());
+        _accountRepositoryMock.Setup(x => x.GetAccountByNumberAsync(It.IsAny<int>())).ReturnsAsync(account);
+
+        // Act
+        var result = _service.UpdateAccountAsync(accountNumber, updateAccount);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.IsCompletedSuccessfully.Should().BeTrue();
+        _accountRepositoryMock.Verify(x => x.CreateAccountAsync(It.IsAny<Account>()), Times.Never);
+        _accountRepositoryMock.Verify(x => x.UpdateAccountAsync(It.IsAny<Account>()), Times.Once);
+        _accountRepositoryMock.Verify(x => x.GetAccountByNumberAsync(It.IsAny<int>()), Times.Once);
+    }
+
+    [Fact]
+    public void DeleteAccount_Should_ReturnTrue()
+    {
+        // Arrange
+        var account = AutoFaker.Generate<Account>();
+
+        _accountRepositoryMock.Setup(x => x.DeleteAccountAsync(It.IsAny<long>())).ReturnsAsync(true);
+        _accountRepositoryMock.Setup(x => x.GetAccountByNumberAsync(It.IsAny<int>())).ReturnsAsync(account);
+
+        // Act
+        var result = _service.DeleteAccountAsync(account.AccountNumber);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.IsCompletedSuccessfully.Should().BeTrue();
+        _accountRepositoryMock.Verify(x => x.CreateAccountAsync(It.IsAny<Account>()), Times.Never);
+        _accountRepositoryMock.Verify(x => x.UpdateAccountAsync(It.IsAny<Account>()), Times.Never);
+        _accountRepositoryMock.Verify(x => x.DeleteAccountAsync(It.IsAny<long>()), Times.AtLeastOnce);
+        _accountRepositoryMock.Verify(x => x.GetAccountByNumberAsync(It.IsAny<int>()), Times.Once);
+    }
 }
