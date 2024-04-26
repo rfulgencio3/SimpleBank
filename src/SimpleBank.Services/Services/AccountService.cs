@@ -34,13 +34,12 @@ public class AccountService : IAccountService
             var account = new Account().FromCreateAccount(createAccount);
             account.AccountNumber = _repository.GetNextAccountNumberAsync().Result;
 
-            return _repository.CreateAccountAsync(account);
+            return await _repository.CreateAccountAsync(account);
         }
         catch (Exception ex)
         {
             throw new Exception($"ERROR_TO_CREATE_ACCOUNT: {ex.Message.ToString()}");
         }
-        
     }
 
     public async Task<Account?> UpdateAccountAsync(int accountNumber, UpdateAccount accountDTO)
