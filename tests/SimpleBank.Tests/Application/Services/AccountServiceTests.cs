@@ -12,11 +12,13 @@ namespace SimpleBank.Tests.Application.Services;
 public class AccountServiceTests
 {
     private readonly AccountService _service;
+    private readonly BaseFixture _fixture;
     private readonly Mock<IAccountRepository> _accountRepositoryMock = new(); 
 
-    public AccountServiceTests()
+    public AccountServiceTests(BaseFixture fixture)
     {
         _service = new AccountService(_accountRepositoryMock.Object);
+        _fixture = fixture;
     }
 
     [Fact]
@@ -36,7 +38,7 @@ public class AccountServiceTests
         _accountRepositoryMock.Verify(x => x.GetAccountByIdAsync(It.IsAny<long>()), Times.Once);
     }
 
-    [Theory]
+    [Theory(DisplayName = "AccountService")]
     [InlineData(Gender.Male)]
     [InlineData(Gender.Female)]
     [InlineData(Gender.Other)]
@@ -133,7 +135,7 @@ public class AccountServiceTests
         // Arrange
         var accountNumber = AutoFaker.Generate<int>();
         var updateAccount = AutoFaker.Generate<UpdateAccount>();
-        var account = AutoFaker.Generate<Account>();
+        var account = _fixture.GenerateAccount();
 
         _accountRepositoryMock.Setup(x => x.UpdateAccountAsync(It.IsAny<Account>())).ReturnsAsync(It.IsAny<Account>());
         _accountRepositoryMock.Setup(x => x.GetAccountByNumberAsync(It.IsAny<int>())).ReturnsAsync(account);

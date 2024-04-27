@@ -3,6 +3,7 @@ using SimpleBank.Application.Services.Interfaces;
 using SimpleBank.Core.Domains.Entities;
 using SimpleBank.Core.Domains.ValueObjects;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SimpleBank.WebAPI.Controllers;
 
