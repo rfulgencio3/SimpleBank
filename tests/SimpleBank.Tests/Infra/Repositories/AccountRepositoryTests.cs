@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Moq;
 using SimpleBank.Core.Domains.Entities;
 using SimpleBank.Core.Domains.Enums;
 using SimpleBank.Infra.Models;
@@ -9,16 +9,11 @@ namespace SimpleBank.Tests.Infra.Repositories;
 public class AccountRepositoryTests
 {
     private readonly AccountRepository _repository;
-    private readonly SimpleBankContext _context;
+    private readonly Mock<SimpleBankContext> _contextMock = new();
 
     public AccountRepositoryTests()
     {
-        var options = new DbContextOptionsBuilder<SimpleBankContext>()
-            .UseInMemoryDatabase(databaseName: "SimpleBankDbMock")
-            .Options;
-
-        _context = new SimpleBankContext(options);
-        _repository = new AccountRepository(_context);
+        _repository = new AccountRepository(_contextMock.Object);
     }
 
     [Fact]
@@ -39,9 +34,8 @@ public class AccountRepositoryTests
             Email = "ada@lovelace.com"
         };
 
-        // Adicionar e salvar dados ao banco de dados em memória
-        _context.Accounts.Add(account);
-        await _context.SaveChangesAsync();
+        _contextMock.Setup(x => x.Accounts.Add(account));
+        //await _context.SaveChangesAsync();
 
         // Act
         var result = await _repository.GetAccountByIdAsync(id);
